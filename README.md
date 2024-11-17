@@ -7,8 +7,8 @@
 ### Huggingface models I have tried (bolded is the best):
 I looked at datasets tuned on `financial phrasebank` and tried them out on our dataset. The performance was mediocre and there was no clear winner. Bolded are the best performing models from what I remember. I fine-tuned the current best performing model (f1 0.685) on the first model in this list.
 
-**- mrm8488/deberta-v3-ft-financial-news-sentiment-analysis**
-**- mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis**
+- **mrm8488/deberta-v3-ft-financial-news-sentiment-analysis**
+- **mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis**
 - nickmuchi/distilroberta-finetuned-financial-text-classification
 - marcev/financebert
 - ahmedrachid/FinancialBERT-Sentiment-Analysis
