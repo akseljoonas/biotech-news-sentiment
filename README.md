@@ -21,6 +21,7 @@ I looked at datasets tuned on `financial phrasebank` and tried them out on our d
 ## Papers I have read
 
 - FINBERT (good paper, easy to read and gives good overview): https://arxiv.org/abs/1908.10063
+- Classification of different fin data but very solid methodology: https://pdfs.semanticscholar.org/95e7/29cb065b9e274c609478376b8ad93982b123.pdf
 - IJCAI 2024 FinLLM Challenge: https://huggingface.co/spaces/TheFinAI/IJCAI-2024-FinLLM-Learderboard 
 - PIXIU financial tailtored LLMs, instruction tuning datasets, and evaluation benchmarks: https://github.com/The-FinAI/PIXIU
 - FinBen is a benchmark for financial LLMs. https://arxiv.org/abs/2402.12659 
