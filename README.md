@@ -25,6 +25,7 @@ I looked at datasets tuned on `financial phrasebank` and tried them out on our d
 - PIXIU financial tailtored LLMs, instruction tuning datasets, and evaluation benchmarks: https://github.com/The-FinAI/PIXIU
 - FinBen is a benchmark for financial LLMs. https://arxiv.org/abs/2402.12659 
 - Id look at FINBERT cites for papers https://www.semanticscholar.org/paper/FinBERT-%3A-A-Large-Language-Model-for-Extracting-Huang-Wang/8798b3a01c29fe0ce45a271bedd934787343dfb5?sort=relevance 
+- There is an interesting idea of taking the last token representation of a Decoder LLM and training a classifier on top of it so you can take advantage of the big and good llms we have. https://arxiv.org/abs/2311.01239
 
 
 ## BERT based models we could try
