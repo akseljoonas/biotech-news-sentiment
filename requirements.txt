@@ -1,0 +1,12 @@
+torch
+transformers
+datasets
+numpy
+pandas
+scikit-learn
+ib_async
+tqdm
+yfinance
+bs4
+feedparser
+huggingface-hub
