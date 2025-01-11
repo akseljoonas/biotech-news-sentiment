@@ -12,3 +12,4 @@ feedparser
 huggingface-hub
 transformers[torch]
 peft
+einops
