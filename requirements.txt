@@ -1,5 +1,5 @@
 torch
-transformers
+transformers[torch]
 datasets
 numpy
 pandas
@@ -10,6 +10,9 @@ yfinance
 bs4
 feedparser
 huggingface-hub
-transformers[torch]
 peft
 einops
+ipywidgets
+jupyter
+matplotlib
+accelerate>=0.26.0
