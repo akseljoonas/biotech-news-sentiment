@@ -10,3 +10,5 @@ yfinance
 bs4
 feedparser
 huggingface-hub
+transformers[torch]
+peft
