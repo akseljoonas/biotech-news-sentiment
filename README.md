@@ -1,7 +1,7 @@
 # Press Release Sentiment Analysis
-In the US, 62% of adults own stocks, whether treasury bonds, stocks, commodities, or any other. The information about public companies such as earnings releases, product announcements, or financial metrics is easily accessible through the internet.
+In the U.S., 62% of adults own various investments like stocks, treasury bonds, or commodities. Information about public companies—such as earnings reports, product launches, and financial metrics—is widely accessible online.
 
-While most of those press releases consist of objective information, a clear sentiment can be extracted as the analysts almost always give an opinion on said news. This project aims to utilize automated sentiment analysis with Large Language Models to try to outpace the market and be the first in the queue to react to new information, trying to predict the market response and profit from shorting/longing the company mentioned in the news.
+Although these updates are often objective, they frequently include analysts' opinions, allowing for clear sentiment analysis. This project leverages Large Language Models to perform automated sentiment analysis, aiming to anticipate market reactions faster than competitors such as investment banks or private investors. Predicting market responses to news seeks to financially benefit the users through strategic buying or shorting of stocks.
 
 ## 🏃‍♂️ Running Source Code
 ### 🛠️ Set-Up
@@ -70,6 +70,13 @@ To train the models, run the desired notebook from the notebooks folder. See the
 
 
 ## 📈 Areas for improvement of the project
+
+
+## ⚠️ Disclosure of copyright
+> [!IMPORTANT]
+> This research project has been conducted during the Language Technology Practical course at the University of Groningen but has been developed
+> independently by the research team and hence should be referenced using the link of this GitHub repo. The team only allows for **non-commercial** use
+> of the models and methodologies assuming standard citation practices. Furthermore, the users of our code take full responsibility for model outputs.
 
 
 
