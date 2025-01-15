@@ -41,7 +41,7 @@ To train the models, run the desired notebook from the notebooks folder. See the
 ├── notebooks                     <- Jupyter notebooks for analysis
 │   ├── OLD-3-LABELS              <- Legacy file with discontinued functionality, not recommended to use
 │   ├── fine_tuning_3_labels      <- File for full fine-tuning on 3 labels, main file used in research
-│   ├── fine_tuning_3_labels      <- File for full fine-tuning on 5 labels (not used in research due to poor performance)
+│   ├── fine_tuning_5_labels      <- File for full fine-tuning on 5 labels (not used in research due to poor performance)
 │   └── lora_tuning               <- PEFT tuning on 5 labels (not used in research due to low full tuning times)
 ├── papers                        <- Main papers we build upon + our own
 │   └── THIS-RESEARCH-PAPER       <- the paper we wrote while working on the project
