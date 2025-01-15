@@ -3,24 +3,29 @@ In the US, 62% of adults own stocks, whether treasury bonds, stocks, commodities
 
 While most of those press releases consist of objective information, a clear sentiment can be extracted as the analysts almost always give an opinion on said news. This project aims to utilize automated sentiment analysis with Large Language Models to try to outpace the market and be the first in the queue to react to new information, trying to predict the market response and profit from shorting/longing the company mentioned in the news.
 
+## 🏃‍♂️ Running Source Code
+### 🛠️ Set-Up
 
-## 🤗 Huggingface models used in this research:
+**Clone the Repository**: 
+Start by cloning the repository to your local machine.
+   ```bash
+   git clone https://github.com/akseljoonas/news-sentiment.git
+   cd news-sentiment
+   ```
+> [!TIP]
+> Before downloading the requirements as seen in the next step,
+> we recommend creating a virtual environment and setting it up
+> as there are a lot of dependencies in this project.
 
-- **Best f1 score: mrm8488/deberta-v3-ft-financial-news-sentiment-analysis**
-- **Best Gross Profit: ProsusAI/finbert**
-- **Base model: google-bert/bert-base-uncased**
-- mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis
-- nickmuchi/distilroberta-finetuned-financial-text-classification
-- ncbi/MedCPT-Article-Encoder
-- dmis-lab/biobert-v1.1
-- microsoft/deberta-v3-base
-- marcev/financebert
-- ahmedrachid/FinancialBERT-Sentiment-Analysis
-- yiyanghkust/finbert-tone
-- Narsil/finbert2
-- StephanAkkerman/FinTwitBERT-sentiment
-- nickmuchi/sec-bert-finetuned-finance-classification
-- FacebookAI/roberta-base
+  
+   Make sure all dependencies are installed by running the following command:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### 🏋️‍♂️ Training the Models
+
+To train the models, run the desired notebook from the notebooks folder. See the next section for more details.
 
 ## 🌳Project Structure
 
@@ -41,9 +46,32 @@ While most of those press releases consist of objective information, a clear sen
 ├── papers                        <- Main papers we build upon + our own
 │   └── THIS-RESEARCH-PAPER       <- the paper we wrote while working on the project
 ├── src/data_pipeline             <- Code used to process the datasets
-├── README.md                     <- Project documentation
+├── README.md                     <- Repository documentation
 └── requirements.txt              <- Dependency list
 ```
+
+## 🤗 Huggingface models used in this research:
+
+- **Best f1 score: mrm8488/deberta-v3-ft-financial-news-sentiment-analysis**
+- **Best Gross Profit: ProsusAI/finbert**
+- **Base model: google-bert/bert-base-uncased**
+- mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis
+- nickmuchi/distilroberta-finetuned-financial-text-classification
+- ncbi/MedCPT-Article-Encoder
+- dmis-lab/biobert-v1.1
+- microsoft/deberta-v3-base
+- marcev/financebert
+- ahmedrachid/FinancialBERT-Sentiment-Analysis
+- yiyanghkust/finbert-tone
+- Narsil/finbert2
+- StephanAkkerman/FinTwitBERT-sentiment
+- nickmuchi/sec-bert-finetuned-finance-classification
+- FacebookAI/roberta-base
+
+
+## 📈 Areas for improvement of the project
+
+
 
 ## 📚 Papers we recommend to read for the curious project viewer
 
