@@ -38,14 +38,20 @@ To train the models, run the desired notebook from the notebooks folder. See the
 │   |    ├── news_prices-new-2    <- Dataset with labels and prices used for evaluation and label creation
 │   |    └── rest                 <- legacy version of the datasets
 │   └── raw                       <- Raw data (not recommended to use)
+│   |    └── ...                  
 ├── notebooks                     <- Jupyter notebooks for analysis
 │   ├── OLD-3-LABELS              <- Legacy file with discontinued functionality, not recommended to use
 │   ├── fine_tuning_3_labels      <- File for full fine-tuning on 3 labels, main file used in research
 │   ├── fine_tuning_5_labels      <- File for full fine-tuning on 5 labels (not used in research due to poor performance)
 │   └── lora_tuning               <- PEFT tuning on 5 labels (not used in research due to low full tuning times)
 ├── papers                        <- Main papers we build upon + our own
+│   ├── ...                       
 │   └── THIS-RESEARCH-PAPER       <- the paper we wrote while working on the project
 ├── src/data_pipeline             <- Code used to process the datasets
+│   ├── biotech_validated         <- File with stock market tickers of the companies used in the research
+│   ├── ib_import_price           <- Used to import prices to our news articles from IBKR. Will not work for external users, but should be used as a reference.
+│   ├── import_news               <- Used to import news articles into the CSV files. Will not work for external users, but should be used as a reference.
+│   └── reformat_fine_tune        <- Used for early preprocessing such as topic pruning or labeling.
 ├── README.md                     <- Repository documentation
 └── requirements.txt              <- Dependency list
 ```
