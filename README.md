@@ -70,7 +70,7 @@ To train the models, run the desired notebook from the notebooks folder. See the
 
 
 ## 📈 Areas for improvement of the project
-
+Read our future research section to find out how to improve the project :))
 
 ## ⚠️ Disclosure of copyright
 > [!IMPORTANT]
@@ -95,4 +95,3 @@ To train the models, run the desired notebook from the notebooks folder. See the
 ## 💡 Interesting stuff
 - Different use cases of LLMs in finance: https://github.com/hananedupouy/LLMs-in-Finance
 - NLP Papers applcibale to finance: https://github.com/maximedb/nlp_papers
-- Read our future research section :)
