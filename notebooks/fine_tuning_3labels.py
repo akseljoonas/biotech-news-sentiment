@@ -12,7 +12,7 @@ from peft import TaskType, get_peft_model
 from pydantic import BaseModel, Field
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from sklearn.model_selection import train_test_split
-from transformers import AutoModel, Trainer, TrainingArguments
+from transformers import AutoModel, AutoTokenizer, Trainer, TrainingArguments
 
 # Set up device
 device = torch.device("cuda" if torch.cuda.is_available() else "mps")
@@ -40,7 +40,9 @@ class LoraConfig(BaseModel):
 
 
 class TrainingConfig(BaseModel):
-    model_name: str = Field("nvidia/NV-Embed-v2", description="Base model to fine-tune")
+    model_name: str = Field(
+        "NovaSearch/stella_en_400M_v5", description="Base model to fine-tune"
+    )
     num_labels: int = Field(3, description="Number of classification labels")
     learning_rate: float = Field(1e-4, description="Learning rate")
     batch_size: int = Field(8, description="Batch size")
@@ -54,7 +56,7 @@ class TrainingConfig(BaseModel):
 
 
 # Model class with LoRA
-class NVEmbedForSequenceClassificationWithLoRA(nn.Module):
+class StellaForSequenceClassificationWithLoRA(nn.Module):
     def __init__(
         self,
         model_name: str,
@@ -65,16 +67,43 @@ class NVEmbedForSequenceClassificationWithLoRA(nn.Module):
         super().__init__()
         self.instruction = instruction
         self.model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, trust_remote_code=True
+        )
         print(self.model)
         print(type(self.model))
-        self.instruction_prefix = f"Instruct: {instruction}\nText: "
+
+        # For stella model, we need to use the appropriate prompt template
+        # Using the s2p prompt format as it's closer to our classification task
+        self.query_prompt = f"Instruct: {instruction}\nQuery: "
+
+        # Get the embedding dimension
+        self.vector_dim = 1024
+        self.vector_linear = nn.Linear(
+            in_features=self.model.config.hidden_size, out_features=self.vector_dim
+        )
+
+        # Load the dimension projection weights if available
+        try:
+            vector_linear_dict = {
+                k.replace("linear.", ""): v
+                for k, v in torch.load(
+                    os.path.join(
+                        model_name, f"2_Dense_{self.vector_dim}/pytorch_model.bin"
+                    )
+                ).items()
+            }
+            self.vector_linear.load_state_dict(vector_linear_dict)
+        except Exception as e:
+            print(f"Could not load vector linear weights: {e}")
+            print("Will use random initialization for vector projection.")
 
         # Freeze base model parameters
         for param in self.model.parameters():
             param.requires_grad = False
 
         # Classification head
-        self.classifier = nn.Linear(4096, num_labels)
+        self.classifier = nn.Linear(self.vector_dim, num_labels)
 
         # Apply LoRA
         if lora_config:
@@ -91,23 +120,44 @@ class NVEmbedForSequenceClassificationWithLoRA(nn.Module):
             self.model = get_peft_model(self.model, peft_config)
             self.model.print_trainable_parameters()
 
-    def forward(
-        self, text=None, labels=None, max_length=512, use_cache=False, **kwargs
-    ):
+    def forward(self, text=None, labels=None, max_length=512, **kwargs):
         # Handle the case where text is provided directly
         if text is not None:
-            print(text)
-            embeddings = self.model.encode(
-                prompts=text,
-                instruction=self.instruction,
-                max_length=max_length,
-                use_cache=use_cache,
-            )
+            # Format the input with appropriate prompt
+            formatted_text = [self.query_prompt + t for t in text]
+
+            # Tokenize the input
+            with torch.no_grad():
+                input_data = self.tokenizer(
+                    formatted_text,
+                    padding="longest",
+                    truncation=True,
+                    max_length=max_length,
+                    return_tensors="pt",
+                )
+                input_data = {k: v.to(device) for k, v in input_data.items()}
+
+                # Get the embeddings using the model
+                attention_mask = input_data["attention_mask"]
+                last_hidden_state = self.model(**input_data)[0]
+
+                # Mask padding tokens
+                last_hidden = last_hidden_state.masked_fill(
+                    ~attention_mask[..., None].bool(), 0.0
+                )
+
+                # Mean pooling
+                embeddings = (
+                    last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+                )
+
+                # Project to vector dimension
+                embeddings = self.vector_linear(embeddings)
+
+                # Normalize embeddings
+                embeddings = F.normalize(embeddings, p=2, dim=1)
         else:
             raise ValueError("This model requires 'text' input for classification")
-
-        # Normalize embeddings
-        embeddings = F.normalize(embeddings, p=2, dim=1)
 
         # Classification
         logits = self.classifier(embeddings)
@@ -240,7 +290,7 @@ def train_lora_model(data_file_path, training_config, lora_config):
     print(f"Class weights: {class_weights}")
 
     # Create model with LoRA
-    model = NVEmbedForSequenceClassificationWithLoRA(
+    model = StellaForSequenceClassificationWithLoRA(
         model_name=training_config.model_name,
         num_labels=training_config.num_labels,
         instruction="Classify this biotech press release based on what it means for the future of the company.",
@@ -260,7 +310,7 @@ def train_lora_model(data_file_path, training_config, lora_config):
                 "This is a test biotech press release.",
                 "Another test press release about drug trials.",
             ],
-            "labels": torch.tensor([0.0, 1.0]).to(device),
+            "labels": torch.tensor([0, 1]).to(device),
         }
         model(**dummy_batch)
         print("Model forward pass works correctly!")
@@ -297,15 +347,6 @@ def train_lora_model(data_file_path, training_config, lora_config):
         compute_metrics=compute_metrics,
         class_weights=class_weights,
     )
-
-    # # Check if evaluation works before training
-    # try:
-    #     sample_inputs = trainer.get_eval_dataloader()
-    #     sample_batch = next(iter(sample_inputs))
-    #     print("Successfully created evaluation batch")
-    # except Exception as e:
-    #     print(f"Error creating evaluation batch: {e}")
-    #     raise
 
     # Train model
     print("Let's start the training")
@@ -355,12 +396,12 @@ if __name__ == "__main__":
 
     # Set up configurations
     training_config = TrainingConfig(
-        model_name="nvidia/NV-Embed-v2",
+        model_name="NovaSearch/stella_en_400M_v5",
         num_labels=3,
         learning_rate=1e-4,
-        batch_size=4,
+        batch_size=8,
         num_epochs=5,
-        gradient_accumulation_steps=8,
+        gradient_accumulation_steps=4,
     )
 
     lora_config = LoraConfig(
