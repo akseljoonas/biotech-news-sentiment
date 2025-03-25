@@ -2,3 +2,6 @@
 .env
 
 results/
+
+data/
+*.tex
