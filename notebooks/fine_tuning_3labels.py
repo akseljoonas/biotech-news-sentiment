@@ -41,7 +41,7 @@ class LoraConfig(BaseModel):
 
 class TrainingConfig(BaseModel):
     model_name: str = Field(
-        "NovaSearch/stella_en_400M_v5", description="Base model to fine-tune"
+        "NovaSearch/stella_en_1.5B_v5", description="Base model to fine-tune"
     )
     num_labels: int = Field(3, description="Number of classification labels")
     learning_rate: float = Field(1e-4, description="Learning rate")
@@ -61,7 +61,7 @@ class StellaForSequenceClassificationWithLoRA(nn.Module):
         self,
         model_name: str,
         num_labels: int = 3,
-        instruction: str = "Classify this biotech press release based on what it means for the future of the company.",
+        instruction: str = "Classify this biotech press release based on what it means for the future of the company as either positive, negative, or neutral.",
         lora_config: Optional[Dict[str, Any]] = None,
     ):
         super().__init__()
@@ -88,9 +88,7 @@ class StellaForSequenceClassificationWithLoRA(nn.Module):
             vector_linear_dict = {
                 k.replace("linear.", ""): v
                 for k, v in torch.load(
-                    os.path.join(
-                        model_name, f"2_Dense_{self.vector_dim}/pytorch_model.bin"
-                    )
+                    f"NovaSearch/2_Dense_{self.vector_dim}/pytorch_model.bin"
                 ).items()
             }
             self.vector_linear.load_state_dict(vector_linear_dict)
@@ -247,7 +245,9 @@ class CustomTrainer(Trainer):
         super().__init__(*args, **kwargs)
         self.class_weights = class_weights
 
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def compute_loss(
+        self, model, inputs, return_outputs=False, num_items_in_batch=None
+    ):
         labels = inputs.get("labels")
         outputs = model(**inputs)
 
@@ -392,16 +392,16 @@ def predict_sentiment(model, text, max_length=512):
 
 if __name__ == "__main__":
     # Data path
-    data_file_path = "/Users/akseljoonas/Documents/news-sentiment/data/processed/finetuning_3_labels_topic_pruned.csv"
+    data_file_path = "data/processed/finetuning_3_labels_topic_pruned.csv"
 
     # Set up configurations
     training_config = TrainingConfig(
-        model_name="NovaSearch/stella_en_400M_v5",
         num_labels=3,
         learning_rate=1e-4,
-        batch_size=8,
-        num_epochs=5,
-        gradient_accumulation_steps=4,
+        batch_size=4,
+        num_epochs=10,
+        gradient_accumulation_steps=1,
+        weight_decay=0.005,
     )
 
     lora_config = LoraConfig(
