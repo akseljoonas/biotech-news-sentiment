@@ -61,7 +61,7 @@ class StellaForSequenceClassificationWithLoRA(nn.Module):
         self,
         model_name: str,
         num_labels: int = 3,
-        instruction: str = "Classify this biotech press release based on what it means for the future of the company as either positive, negative, or neutral.",
+        instruction: str = "Classify this biotech press release based on what it means for the future of the company as either negative, neutral, or positive.",
         lora_config: Optional[Dict[str, Any]] = None,
     ):
         super().__init__()
