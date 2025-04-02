@@ -145,15 +145,16 @@ class StellaForSequenceClassificationWithLoRA(nn.Module):
                 )
 
                 # Mean pooling
+                attention_sum = attention_mask.sum(dim=1)[..., None]
                 embeddings = (
-                    last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+                    last_hidden.sum(dim=1) / (attention_sum + 1e-8)
                 )
 
                 # Project to vector dimension
                 embeddings = self.vector_linear(embeddings)
 
                 # Normalize embeddings
-                embeddings = F.normalize(embeddings, p=2, dim=1)
+                embeddings = F.normalize(embeddings, p=2, dim=1, eps=1e-8)
         else:
             raise ValueError("This model requires 'text' input for classification")
 
@@ -333,8 +334,9 @@ def train_lora_model(data_file_path, training_config, lora_config):
         load_best_model_at_end=True,
         metric_for_best_model="f1",
         save_total_limit=1,
-        fp16=(device.type == "cuda"),  # Only use fp16 with CUDA, not with MPS
+        fp16=False,
         report_to="none",
+        max_grad_norm=1.0,
     )
 
     # Create trainer
