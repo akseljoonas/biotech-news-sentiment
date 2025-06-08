@@ -5,3 +5,4 @@ results/
 
 data/
 *.tex
+.venv/
